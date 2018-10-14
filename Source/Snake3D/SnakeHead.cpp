@@ -17,8 +17,8 @@ ASnakeHead::ASnakeHead()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	OurVisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
-	OurVisibleComponent->SetupAttachment(RootComponent);
+	SnakeHead = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SnakeHead"));
+	SnakeHead->SetupAttachment(RootComponent);
 
 }
 
@@ -27,10 +27,10 @@ void ASnakeHead::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CurrentVelocity.X = 50.0f * CurrentDirection;
+	//CurrentVelocity.X = 50.0f * CurrentDirection;
 
-	GetWorld()->GetTimerManager().SetTimer(MovementDelay, this, &ASnakeHead::Movement, 0.2f, true);
-
+	//GetWorld()->GetTimerManager().SetTimer(MovementDelay, this, &ASnakeHead::Movement, 0.1f, true);
+	GetScreenPosition();
 	
 }
 
@@ -39,38 +39,8 @@ void ASnakeHead::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(this, 0);
-
-	//FVector2D ScreenLocation;
-	//OurPlayerController->ProjectWorldLocationToScreen(GetActorLocation(), ScreenLocation);
-
-	//int32 ScreenWidth = 0;
-	//int32 ScreenHeight = 0;
-	//OurPlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
-
-	//UE_LOG(LogTemp, Error, TEXT("Screen Width: %d, Screen Height: %d"), ScreenWidth, ScreenHeight);
-
-	//FVector origin;
-	//FVector boxExtent;
-	//GetActorBounds(false, origin, boxExtent);
-
-	////UE_LOG(LogTemp, Warning, TEXT("Actor origin: %s, Actor Extents: %s"), *origin.ToString(), *boxExtent.ToString());
-
-	//int32 ScreenX = (int32)ScreenLocation.X;
-	//int32 ScreenY = (int32)ScreenLocation.Y;
-
-	////UE_LOG(LogTemp, Warning, TEXT("Screen X: %d"), ScreenX);
-
-	//UE_LOG(LogTemp, Warning, TEXT("ScreenX - ActorWidth: %d"), ScreenX);
-	//UE_LOG(LogTemp, Warning, TEXT("ScreenWidth: %d"), ScreenWidth);
-
-	//if (ScreenX > ScreenWidth - 100)
-	//{
-	//	SetActorLocation(FVector(-ScreenWidth, 0.0f, 0.0f));
-
-
-	//}
-	
+	GetScreenPosition();
+	Movement();
 }
 
 // Called to bind functionality to input
@@ -102,64 +72,65 @@ void ASnakeHead::MoveRight()
 	CurrentDirection = 1.0f;
 
 	CurrentVelocity.Y = 0.0f;
-	CurrentVelocity.X = 50.0f;
-
+	CurrentVelocity.X = 10.0f;
 }
 void ASnakeHead::MoveLeft()
 {
 	CurrentDirection = -1.0f;
 
 	CurrentVelocity.Y = 0.0f;
-	CurrentVelocity.X = 50.0f;
+	CurrentVelocity.X = 10.0f;
 }
 
 void ASnakeHead::MoveUp()
 {
 	CurrentDirection = -1.0f;
 
-	CurrentVelocity.Y = 50.0f;
+	CurrentVelocity.Y = 10.0f;
 	CurrentVelocity.X = 0.0f;
 }
 void ASnakeHead::MoveDown()
 {
 	CurrentDirection = 1.0f;
 
-	CurrentVelocity.Y = 50.0f;
+	CurrentVelocity.Y = 10.0f;
 	CurrentVelocity.X = 0.0f;
 }
 
 void ASnakeHead::GetScreenPosition()
 {
-	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	OurPlayerController = UGameplayStatics::GetPlayerController(this, 0);
 
-	FVector2D ScreenLocation;
+	//Makes sure the Player Controller is not null
+	if (!OurPlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Player Controler attached"));
+		return;
+	}
+
 	OurPlayerController->ProjectWorldLocationToScreen(GetActorLocation(), ScreenLocation);
-
-	int32 ScreenWidth = 0;
-	int32 ScreenHeight = 0;
 	OurPlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
 
 	UE_LOG(LogTemp, Error, TEXT("Screen Width: %d, Screen Height: %d"), ScreenWidth, ScreenHeight);
 
-	FVector origin;
-	FVector boxExtent;
-	GetActorBounds(false, origin, boxExtent);
+	ScreenX = (int32)ScreenLocation.X;
+	ScreenY = (int32)ScreenLocation.Y;
 
-	//UE_LOG(LogTemp, Warning, TEXT("Actor origin: %s, Actor Extents: %s"), *origin.ToString(), *boxExtent.ToString());
-
-	int32 ScreenX = (int32)ScreenLocation.X;
-	int32 ScreenY = (int32)ScreenLocation.Y;
-
-	//UE_LOG(LogTemp, Warning, TEXT("Screen X: %d"), ScreenX);
-
-	UE_LOG(LogTemp, Warning, TEXT("ScreenX - ActorWidth: %d"), ScreenX);
+	UE_LOG(LogTemp, Warning, TEXT("ScreenX %d"), ScreenX);
 	UE_LOG(LogTemp, Warning, TEXT("ScreenWidth: %d"), ScreenWidth);
 
 	if (ScreenX > ScreenWidth)
 	{
 		SetActorLocation(FVector(-ScreenWidth, 0.0f, 0.0f));
-		
-
 	}
+	
+	if (ScreenX < 0)
+	{
+		SetActorLocation(FVector(ScreenWidth, 0.0f, 0.0f));
+	}
+
+	
+
+	//UE_LOG(LogTemp, Warning, TEXT("Screen X: %d"), ScreenX);
 }
 

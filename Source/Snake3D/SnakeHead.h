@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "PaperSpriteComponent.h"
 #include "SnakeHead.generated.h"
 
 UCLASS()
@@ -28,12 +29,20 @@ public:
 
 	void GetScreenPosition();
 
+	///Camera Properties
 	UPROPERTY(EditAnywhere)
 	AActor* Camera;
+	FVector2D ScreenLocation;
+	int32 ScreenWidth = 0;
+	int32 ScreenHeight = 0;
+	int32 ScreenX;
+	int32 ScreenY;
 
 private:
+	
+	//UStaticMeshComponent* OurVisibleComponent;
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* OurVisibleComponent;
+	UPaperSpriteComponent* SnakeHead = nullptr;
 
 	void Movement();
 
@@ -53,6 +62,5 @@ private:
 
 	FTimerHandle MovementDelay;
 
-	
-
+	APlayerController* OurPlayerController = nullptr;
 };
