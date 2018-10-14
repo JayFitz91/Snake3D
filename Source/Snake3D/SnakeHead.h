@@ -26,6 +26,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void GetScreenPosition();
+
+	UPROPERTY(EditAnywhere)
+	AActor* Camera;
+
 private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* OurVisibleComponent;
@@ -49,5 +54,5 @@ private:
 	FTimerHandle MovementDelay;
 
 	
-	
+
 };
