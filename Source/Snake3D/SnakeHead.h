@@ -30,8 +30,6 @@ public:
 	void GetScreenPosition();
 
 	///Camera Properties
-	UPROPERTY(EditAnywhere)
-	AActor* Camera;
 	FVector2D ScreenLocation;
 	int32 ScreenWidth = 0;
 	int32 ScreenHeight = 0;
@@ -44,7 +42,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	UPaperSpriteComponent* SnakeHead = nullptr;
 
-	void Movement();
+	void Movement(float DeltaTime);
 
 	///Input Functions
 	void MoveRight();
@@ -59,6 +57,10 @@ private:
 	//Value between 1.0f and -1.0f that tracks direction
 	UPROPERTY(VisibleAnywhere)
 	float CurrentDirection = 1.0f;
+
+	//Movement speed of the snake
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed = 100.0f;
 
 	FTimerHandle MovementDelay;
 

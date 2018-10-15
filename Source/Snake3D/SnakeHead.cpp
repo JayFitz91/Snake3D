@@ -6,6 +6,7 @@
 #include "Public/TimerManager.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/Engine.h"
 
 // Sets default values
 ASnakeHead::ASnakeHead()
@@ -40,7 +41,7 @@ void ASnakeHead::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	GetScreenPosition();
-	Movement();
+	Movement(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -57,11 +58,11 @@ void ASnakeHead::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-void ASnakeHead::Movement()
+void ASnakeHead::Movement(float DeltaTime)
 {
 	//if (!CurrentVelocity.IsZero())
 	//{
-		FVector NewLocation = GetActorLocation() + (CurrentVelocity * CurrentDirection);
+		FVector NewLocation = GetActorLocation() + (CurrentVelocity * CurrentDirection) * DeltaTime;
 		SetActorLocation(NewLocation);
 	//}
 
@@ -72,28 +73,28 @@ void ASnakeHead::MoveRight()
 	CurrentDirection = 1.0f;
 
 	CurrentVelocity.Y = 0.0f;
-	CurrentVelocity.X = 10.0f;
+	CurrentVelocity.X = MoveSpeed;
 }
 void ASnakeHead::MoveLeft()
 {
 	CurrentDirection = -1.0f;
 
 	CurrentVelocity.Y = 0.0f;
-	CurrentVelocity.X = 10.0f;
+	CurrentVelocity.X = MoveSpeed;
 }
 
 void ASnakeHead::MoveUp()
 {
 	CurrentDirection = -1.0f;
 
-	CurrentVelocity.Y = 10.0f;
+	CurrentVelocity.Y = MoveSpeed;
 	CurrentVelocity.X = 0.0f;
 }
 void ASnakeHead::MoveDown()
 {
 	CurrentDirection = 1.0f;
 
-	CurrentVelocity.Y = 10.0f;
+	CurrentVelocity.Y = MoveSpeed;
 	CurrentVelocity.X = 0.0f;
 }
 
@@ -116,20 +117,35 @@ void ASnakeHead::GetScreenPosition()
 	ScreenX = (int32)ScreenLocation.X;
 	ScreenY = (int32)ScreenLocation.Y;
 
-	UE_LOG(LogTemp, Warning, TEXT("ScreenX %d"), ScreenX);
+	UE_LOG(LogTemp, Warning, TEXT("ScreenX %d, ScreenY %d"), ScreenX, ScreenY);
 	UE_LOG(LogTemp, Warning, TEXT("ScreenWidth: %d"), ScreenWidth);
 
-	if (ScreenX > ScreenWidth)
+	FString DebugMessage = FString::Printf(TEXT("ScreenX %d, ScreenY %d"), ScreenX, ScreenY);
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, DebugMessage);
+
+	if (GetActorLocation().X > ScreenWidth / 2)
 	{
-		SetActorLocation(FVector(-ScreenWidth, 0.0f, 0.0f));
+		UE_LOG(LogTemp, Error, TEXT("Out of View"));
+		SetActorLocation(FVector(-ScreenWidth / 2, GetActorLocation().Y, 0.0f));
 	}
 	
-	if (ScreenX < 0)
+	else if (GetActorLocation().X < (-ScreenWidth / 2))
 	{
-		SetActorLocation(FVector(ScreenWidth, 0.0f, 0.0f));
+		SetActorLocation(FVector(ScreenWidth / 2, GetActorLocation().Y, 0.0f));
+		UE_LOG(LogTemp, Error, TEXT("Out of View"));
 	}
 
-	
+	if (GetActorLocation().Y > ScreenHeight / 2)
+	{
+		SetActorLocation(FVector(GetActorLocation().X, -ScreenHeight / 2, 0.0f));
+	}
+
+	else if (GetActorLocation().Y < (-ScreenHeight / 2))
+	{
+		SetActorLocation(FVector(GetActorLocation().X, ScreenHeight / 2, 0.0f));
+	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Screen X: %d"), ScreenX);
 }
