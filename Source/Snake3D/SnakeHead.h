@@ -65,4 +65,7 @@ private:
 	FTimerHandle MovementDelay;
 
 	APlayerController* OurPlayerController = nullptr;
+
+	/*UPROPERTY(EditAnywhere)
+	TSubclassOf<class AFood> MyItemBlueprint;*/
 };

@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "Food.h"
 
 // Sets default values
 ASnakeHead::ASnakeHead()
@@ -32,6 +33,8 @@ void ASnakeHead::BeginPlay()
 
 	//GetWorld()->GetTimerManager().SetTimer(MovementDelay, this, &ASnakeHead::Movement, 0.1f, true);
 	GetScreenPosition();
+
+	//GetWorld()->SpawnActor<AFood>(MyItemBlueprint, FVector(0.0f, 0.f, 0.f), FRotator(0.0f, 0.f, 0.f), FActorSpawnParameters());
 	
 }
 
@@ -140,11 +143,13 @@ void ASnakeHead::GetScreenPosition()
 	if (GetActorLocation().Y > ScreenHeight / 2)
 	{
 		SetActorLocation(FVector(GetActorLocation().X, -ScreenHeight / 2, 0.0f));
+		UE_LOG(LogTemp, Error, TEXT("Out of View"));
 	}
 
 	else if (GetActorLocation().Y < (-ScreenHeight / 2))
 	{
 		SetActorLocation(FVector(GetActorLocation().X, ScreenHeight / 2, 0.0f));
+		UE_LOG(LogTemp, Error, TEXT("Out of View"));
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Screen X: %d"), ScreenX);
