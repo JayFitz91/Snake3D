@@ -3,34 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraActor.h"
-#include "MainCamera.generated.h"
+#include "GameFramework/Actor.h"
+#include "Camera/CameraComponent.h"
+#include "Camera.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class SNAKE3D_API AMainCamera : public ACameraActor
+class SNAKE3D_API ACamera : public AActor
 {
 	GENERATED_BODY()
-
-public:
-
-	AMainCamera();
+	
+public:	
+	// Sets default values for this actor's properties
+	ACamera();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	/// FUNCTIONS ///
-	void SpawnFood();
 
-	/// VARIABLES ///
-	APlayerController* OurPlayerController = nullptr;
+	/*APlayerController* OurPlayerController = nullptr;
 
 	///Camera Properties
 	FVector2D ScreenLocation;
@@ -42,10 +36,13 @@ public:
 	void GetScreenPosition();
 
 	UPROPERTY(EditAnywhere)
-	AActor* Snake;
+		AActor* Snake;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class AFood> MyItemBlueprint;
+		TSubclassOf<class AFood> MyItemBlueprint;
 
-	FTimerHandle MovementDelay;
+	UPROPERTY(VisibleAnywhere)
+		AActor* Camera;*/
+	
+	
 };

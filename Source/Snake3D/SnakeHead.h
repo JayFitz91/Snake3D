@@ -27,15 +27,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void GetScreenPosition();
-
-	///Camera Properties
-	FVector2D ScreenLocation;
-	int32 ScreenWidth = 0;
-	int32 ScreenHeight = 0;
-	int32 ScreenX;
-	int32 ScreenY;
-
 private:
 	
 	//UStaticMeshComponent* OurVisibleComponent;
@@ -61,11 +52,4 @@ private:
 	//Movement speed of the snake
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed = 100.0f;
-
-	FTimerHandle MovementDelay;
-
-	APlayerController* OurPlayerController = nullptr;
-
-	/*UPROPERTY(EditAnywhere)
-	TSubclassOf<class AFood> MyItemBlueprint;*/
 };
