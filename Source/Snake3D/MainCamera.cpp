@@ -34,6 +34,8 @@ void AMainCamera::BeginPlay()
 	OurPlayerController->GetViewportSize(ScreenWidth, ScreenHeight);
 	UE_LOG(LogTemp, Error, TEXT("Screen Width: %d, Screen Height: %d"), ScreenWidth, ScreenHeight);
 
+	OurPlayerController->ProjectWorldLocationToScreen(Snake->GetActorLocation(), ScreenLocation);
+
 	//Invoke the method for spawning food into the scene
 	GetWorld()->GetTimerManager().SetTimer(MovementDelay, this, &AMainCamera::SpawnFood, 1.0f, true);
 }
@@ -49,7 +51,7 @@ void AMainCamera::Tick(float DeltaTime)
 
 void AMainCamera::GetScreenPosition()
 {
-	OurPlayerController->ProjectWorldLocationToScreen(Snake->GetActorLocation(), ScreenLocation);
+	
 	
 	ScreenX = (int32)ScreenLocation.X;
 	ScreenY = (int32)ScreenLocation.Y;
@@ -91,5 +93,10 @@ void AMainCamera::GetScreenPosition()
 
 void AMainCamera::SpawnFood()
 {
-	GetWorld()->SpawnActor<AFood>(MyItemBlueprint, FVector(FMath::RandRange(0, ScreenWidth), FMath::RandRange(0, ScreenHeight), 0.f), FRotator(0.0f, 0.f, 0.f), FActorSpawnParameters());
+	/*FVector WorldLocation;
+	FVector WorldDirection;
+
+	OurPlayerController->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, WorldLocation, WorldDirection);*/
+
+	GetWorld()->SpawnActor<AFood>(MyItemBlueprint, FVector(FMath::RandRange(-(int32)ScreenLocation.X, (int32)ScreenLocation.X), FMath::RandRange(-(int32)ScreenLocation.Y, (int32)ScreenLocation.Y), 0.f), FRotator(0.0f, 0.f, 0.f), FActorSpawnParameters());
 }

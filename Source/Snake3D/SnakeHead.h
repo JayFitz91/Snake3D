@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "PaperSpriteComponent.h"
+#include "Components/BoxComponent.h"
 #include "SnakeHead.generated.h"
 
 UCLASS()
@@ -15,6 +16,9 @@ class SNAKE3D_API ASnakeHead : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ASnakeHead();
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,9 +33,11 @@ public:
 
 private:
 	
-	//UStaticMeshComponent* OurVisibleComponent;
 	UPROPERTY(EditAnywhere)
 	UPaperSpriteComponent* SnakeHead = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* _collider;
 
 	void Movement(float DeltaTime);
 
@@ -52,4 +58,6 @@ private:
 	//Movement speed of the snake
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed = 100.0f;
+
+	
 };

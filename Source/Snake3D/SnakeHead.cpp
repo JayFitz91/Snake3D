@@ -18,9 +18,17 @@ ASnakeHead::ASnakeHead()
 	//Set this pawn to be controlled by the lowest number player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	_collider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+
+	_collider->SetHiddenInGame(false);
+	_collider->OnComponentBeginOverlap.AddDynamic(this, &ASnakeHead::OnOverlapBegin);
+
+	RootComponent = _collider;
+
 	SnakeHead = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SnakeHead"));
 	SnakeHead->SetupAttachment(RootComponent);
+
+	//OnActorBeginOverlap.AddDynamic(this, &ASnakeHead::OnOverlapBegin);
 
 }
 
@@ -91,6 +99,16 @@ void ASnakeHead::MoveDown()
 
 	CurrentVelocity.Y = MoveSpeed;
 	CurrentVelocity.X = 0.0f;
+}
+
+void ASnakeHead::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("PICKED UP!")));
+
+	if (OtherActor && (OtherActor != this))
+	{
+		OtherActor->Destroy();
+	}
 }
 
 
